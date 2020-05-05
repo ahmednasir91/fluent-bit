@@ -94,10 +94,13 @@ COPY --from=builder /usr/lib/x86_64-linux-gnu/libffi* /usr/lib/x86_64-linux-gnu/
 COPY --from=builder /lib/x86_64-linux-gnu/libcom_err* /lib/x86_64-linux-gnu/
 COPY --from=builder /lib/x86_64-linux-gnu/libkeyutils* /lib/x86_64-linux-gnu/
 
+# AWS Kinesis Plugin
+COPY --from=fluent-bit-with-kinesis:latest /kinesis-streams/bin/kinesis.so /fluent-bit/kinesis.so
+
 COPY --from=builder /fluent-bit /fluent-bit
 
 #
 EXPOSE 2020
 
 # Entry point
-CMD ["/fluent-bit/bin/fluent-bit", "-c", "/fluent-bit/etc/fluent-bit.conf"]
+CMD ["/fluent-bit/bin/fluent-bit", "-e", "/fluent-bit/kinesis.so", "-c", "/fluent-bit/etc/fluent-bit.conf"]

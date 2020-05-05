@@ -1,0 +1,12 @@
+FROM golang:1.12
+ENV GO111MODULE on
+
+# Kinesis Streams
+ARG KINESIS_PLUGIN_CLONE_URL=https://github.com/aws/amazon-kinesis-streams-for-fluent-bit.git
+ARG KINESIS_PLUGIN_BRANCH=master
+
+RUN git clone $KINESIS_PLUGIN_CLONE_URL /kinesis-streams
+WORKDIR /kinesis-streams
+RUN git fetch && git checkout $KINESIS_PLUGIN_BRANCH
+RUN go mod download
+RUN make release
